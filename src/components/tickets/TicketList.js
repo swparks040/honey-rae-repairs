@@ -14,15 +14,15 @@ export const TicketList = ({ searchTermState }) => {
     const honeyUserObject = JSON.parse(localHoneyUser)
     // Almost always going to be for initial state in useEffect()
 
-useEffect(
-    () => {
-        const searchedTickets = tickets.filter(ticket => {
-            return ticket.description.toLowerCase().startsWith(searchTermState.toLowerCase())
-        })
-        setFiltered(searchedTickets)
-    }, 
-    [ searchTermState ]
-)
+    useEffect(
+        () => {
+            const searchedTickets = tickets.filter(ticket => {
+                return ticket.description.toLowerCase().startsWith(searchTermState.toLowerCase())
+            })
+            setFiltered(searchedTickets)
+        }, 
+        [searchTermState]
+    )
 
     useEffect(
         () => {
@@ -36,6 +36,7 @@ useEffect(
          },
          [emergency]
     )
+
     useEffect(
         () => {
             fetch(`http://localhost:8088/serviceTickets`)
