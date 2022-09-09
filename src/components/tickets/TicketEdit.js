@@ -42,6 +42,7 @@ export const TicketEdit = () => {
                 <textarea
                     required autoFocus
                     type="text"
+                    placeholder="Describe issue in detail here."
                     style={{
                         height: "15rem"
                     }}

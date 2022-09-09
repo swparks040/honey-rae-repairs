@@ -58,6 +58,7 @@ export const CustomerForm = () => {
                 required
                 autoFocus
                 type="text"
+                placeholder="123 Happy Street, Happyville, HA #####"
                 className="form-control"
                 value={profile.address}
                 onChange={(evt) => {
@@ -75,6 +76,7 @@ export const CustomerForm = () => {
                 required
                 autoFocus
                 type="text"
+                placeholder="###-###-####"
                 className="form-control"
                 value={profile.phoneNumber}
                 onChange={(evt) => {

@@ -8,7 +8,7 @@ export const TicketForm = () => {
     */
     const [ticket, update] = useState({
         description: "",
-        emergency: false
+        emergency: "false"
     })
     /*
         TODO: Use the useNavigation() hook so you can redirect

@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import "./Tickets.css";
 //import useNavigate from react router DOM
 import { Link, useNavigate } from "react-router-dom";
+import { Ticket } from "./Ticket";
 
-export const TicketList = ({ searchTermState }) => {
+export const TicketList = ({ searchTermState=null }) => {
   const [tickets, setTickets] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [filteredTickets, setFiltered] = useState([]);
   const [emergency, setEmergency] = useState(false);
   const [openOnly, updateOpenOnly] = useState(false);
@@ -32,14 +34,25 @@ export const TicketList = ({ searchTermState }) => {
     } else {
       setFiltered(tickets);
     }
-  }, [emergency]);
+  }, [emergency])
+
+  const getAllTickets = () => {
+    fetch(`http://localhost:8088/serviceTickets?_embed=employeeTickets`)
+            .then((response) => response.json())
+            .then((ticketArray) => {
+            setTickets(ticketArray);
+            });
+  }
 
   useEffect(
     () => {
-      fetch(`http://localhost:8088/serviceTickets`)
+        
+      getAllTickets()
+
+        fetch(`http://localhost:8088/employees?_expand=user`)
         .then((response) => response.json())
-        .then((ticketArray) => {
-          setTickets(ticketArray);
+        .then((employeeArray) => {
+            setEmployees(employeeArray);
         });
     },
     []
@@ -85,52 +98,29 @@ export const TicketList = ({ searchTermState }) => {
     }
   }, [openOnly]);
 
-  return (
-    <>
-      {honeyUserObject.staff ? (
-        <>
-          <button
-            onClick={() => {
-              setEmergency(true);
-            }}
-          >
-            Emergency Only
-          </button>
-          <button
-            onClick={() => {
-              setEmergency(false);
-            }}
-          >
-            Show All
-          </button>
+  return <>
+      {
+      honeyUserObject.staff 
+            ? <>
+          <button onClick={() => {setEmergency(true)}}>Emergency Only</button>
+          <button onClick={() => {setEmergency(false)}}>Show All</button>
         </>
-      ) : (
-        <>
-          <button onClick={() => navigate("/ticket/create")}>
-            Create Ticket
-          </button>
+            : <>
+          <button onClick={() => navigate("/ticket/create")}>Create Ticket</button>
           <button onClick={() => updateOpenOnly(true)}>Open Ticket</button>
           <button onClick={() => updateOpenOnly(false)}>All My Tickets</button>
         </>
-      )}
+      }
 
       <h2>List of Tickets</h2>
 
       <article className="tickets">
-        {filteredTickets.map((ticket) => {
-          return (
-            <section className="ticket" key={`ticket--${ticket.id}`}>
-              <header>
-                <Link to={`/tickets/${ticket.id}/edit`}>
-                  Ticket {ticket.id}
-                </Link>
-              </header>
-              <section>{ticket.description}</section>
-              <footer>Emergency: {ticket.emergency ? "🧨" : "No"}</footer>
-            </section>
-          );
-        })}
+        {filteredTickets.map(
+            (ticket) => <Ticket employees={employees}
+            getAllTickets={getAllTickets} 
+            currentUser={honeyUserObject} 
+            ticketObject={ticket} />)}
       </article>
     </>
-  );
+  
 };
